@@ -17,6 +17,19 @@ def color_thresh(img, rgb_thresh=(160, 160, 160)):
     # Return the binary image
     return color_select
 
+def rock_thresh(img, threshold_low=(100, 100, 0), threshold_high=(160, 160, 40)):
+    # Create an array of zeros same xy size as img, but single channel
+    color_select = np.zeros_like(img[:, :, 0])
+    # Require that each pixel be above all three threshold values in RGB
+    # above_thresh will now contain a boolean array with "True"
+    # where threshold was met
+    above_thresh = ~((img[:, :, 0] > threshold_low[0]) & (img[:, :, 0] < threshold_high[0]) \
+                     & (img[:, :, 1] > threshold_low[1]) & (img[:, :, 1] < threshold_high[1]) \
+                     & (img[:, :, 2] > threshold_low[2]) & (img[:, :, 2] < threshold_high[2]))
+    # Index the array of zeros with the boolean array and set to 1
+    color_select[above_thresh] = 1
+    return color_select
+
 # Define a function to convert to rover-centric coordinates
 def rover_coords(binary_img):
     # Identify nonzero pixels
@@ -97,10 +110,13 @@ def perception_step(Rover):
     # 2) Apply perspective transform
     birds_view = perspect_transform(Rover.img, source, destination)
     # 3) Apply color threshold to identify navigable terrain/obstacles/rock samples
-    thresholded_terrain = color_thresh(birds_view, rgb_thresh=(220, 220, 200))
-    thresholded_obstacles = color_thresh(birds_view, rgb_thresh=(90, 90, 90))
-    thresholded_rocks = color_thresh(birds_view, rgb_thresh=(100,100,100))
-     # 4) Update Rover.vision_image (this will be displayed on left side of screen)
+    # thresholded_terrain = color_thresh(birds_view, rgb_thresh=(220, 220, 200))
+    # thresholded_obstacles = color_thresh(birds_view, rgb_thresh=(90, 90, 90))
+    # thresholded_rocks = color_thresh(birds_view, rgb_thresh=(100,100,100))
+    thresholded_terrain = color_thresh(birds_view)
+    thresholded_obstacles = color_thresh(birds_view)
+    thresholded_rocks = rock_thresh(birds_view)
+ # 4) Update Rover.vision_image (this will be displayed on left side of screen)
     Rover.vision_image[:,:,0] = thresholded_terrain * 255
     Rover.vision_image[:,:,1] = thresholded_rocks * 255
     Rover.vision_image[:,:,2] = thresholded_obstacles * 255
@@ -128,6 +144,6 @@ def perception_step(Rover):
     # Update Rover pixel distances and angles
     Rover.nav_dists, Rover.nav_angles = to_polar_coords(terrain_xpix, terrain_ypix)
  
-    
+    Rover.terrain = thresholded_terrain
     
     return Rover
