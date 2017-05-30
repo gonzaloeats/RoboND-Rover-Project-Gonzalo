@@ -51,11 +51,13 @@ And another!
 #### 1. Fill in the `perception_step()` (at the bottom of the `perception.py` script) and `decision_step()` (in `decision.py`) functions in the autonomous mapping scripts and an explanation is provided in the writeup of how and why these functions were modified as they were.
 
 
-#### 2. Launching in autonomous mode your rover can navigate and map autonomously.  Explain your results and how you might improve them in your writeup.  
+#### 2. Launching in autonomous mode your rover can navigate and map autonomously.  Explain your results and how you might improve them in your writeup. Finally I was able to get above 60% fidelity. The rocks were easy to point out, and mapping the terrain wasn't difficult once I figured out how to keep the robot from getting stuck. It project proved to be quite a challenge for me. With a little bit of help with the perception code from one the mentors I was able to get the right threshold to properly update my map. I think I could still map a bit faster and more accurate if I improve the decision code a bit further. 
 
-**Note: running the simulator with different choices of resolution and graphics quality may produce different results, particularly on different machines!  Make a note of your simulator settings (resolution and graphics quality set on launch) and frames per second (FPS output to terminal by `drive_rover.py`) in your writeup when you submit the project so your reviewer can reproduce your results.**
+**Note: running the simulator with different choices of resolution and graphics quality may produce different results, particularly on different machines!  Make a note of your simulator settings (resolution and graphics quality set on launch) and frames per second (FPS output to terminal by `drive_rover.py`) in your writeup when you submit the project so your reviewer can reproduce your results.** I used 720x480 resolution set at fantastic to produce passing results.
 
-Here I'll talk about the approach I took, what techniques I used, what worked and why, where the pipeline might fail and how I might improve it if I were going to pursue this project further.  
+Here I'll talk about the approach I took, what techniques I used, what worked and why, where the pipeline might fail and how I might improve it if I were going to pursue this project further. 
+
+This was a pretty intensive learning experience for me, I was able to see how object oriented programing really works. Rover was the first class I've ever used in a real application, I was impressed by the use of decorators and how everything came together. At first I had no idea how everything worked but little by little I was able to start putting things together. I did end up wasting a lot of time just trying to get the autonomous mode to work. I had to restart my terminal every time I made changes to code. I lost a few hours but thankfully I was able to spot the issue. In the future I would like to figure out a way to collect the rocks. Also I would like to display the robot's position on the map.
 
 
 
