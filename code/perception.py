@@ -3,7 +3,41 @@ import cv2
 
 # Identify pixels above the threshold
 # Threshold of RGB > 160 does a nice job of identifying ground pixels only
-def color_thresh(img, rgb_thresh=(160, 160, 160)):
+
+def color_thresh(img):
+    HSV = cv2.cvtColor(img, cv2.COLOR_RGB2HSV)
+ 
+    # Tan color
+    layer_1 = cv2.inRange(HSV, (20, 200, 200), (50, 255, 255))
+ 
+    sensitivity_1 = 30
+    layer_2 = cv2.inRange(HSV, (0,0,255-sensitivity_1), (255,40,255))
+ 
+    sensitivity_2 = 30
+    HSL = cv2.cvtColor(img, cv2.COLOR_RGB2HLS)
+    layer_3 = cv2.inRange(HSL, (0,255-sensitivity_2,0), (255,255,sensitivity_2))
+ 
+    layer_4 = cv2.inRange(img, (220,220,220), (255,255,255))
+ 
+    bit_layer = layer_1 | layer_2 | layer_3 | layer_4
+ 
+    return bit_layer
+
+def color_thresh_obstacles(img, rgb_thresh=(90, 90, 90)):
+    # Create an array of zeros same xy size as img, but single channel
+    color_select = np.zeros_like(img[:,:,0])
+    # Require that each pixel be above all three threshold values in RGB
+    # above_thresh will now contain a boolean array with "True"
+    # where threshold was met
+    above_thresh = (img[:,:,0] > rgb_thresh[0]) \
+                & (img[:,:,1] > rgb_thresh[1]) \
+                & (img[:,:,2] > rgb_thresh[2])
+    # Index the array of zeros with the boolean array and set to 1
+    color_select[above_thresh] = 1
+    # Return the binary image
+    return color_select
+
+def color_thresh_terrain(img, rgb_thresh=(160, 160, 160)):
     # Create an array of zeros same xy size as img, but single channel
     color_select = np.zeros_like(img[:,:,0])
     # Require that each pixel be above all three threshold values in RGB
@@ -102,6 +136,7 @@ def perception_step(Rover):
     dst_size =5
     bottom_offset =6
     #source = np.float32([[47, 128], [283 ,133],[202, 96], [125, 96]])
+    #attempt to improve fidelity with second iteration of updating calibration
     source = np.float32([[14, 140], [301 ,140],[200, 96], [118, 96]])
     destination = np.float32([[Rover.img.shape[1]/2 - dst_size, Rover.img.shape[0] - bottom_offset],
                   [Rover.img.shape[1]/2 + dst_size, Rover.img.shape[0] - bottom_offset],
@@ -114,8 +149,8 @@ def perception_step(Rover):
     # thresholded_terrain = color_thresh(birds_view, rgb_thresh=(220, 220, 200))
     # thresholded_obstacles = color_thresh(birds_view, rgb_thresh=(90, 90, 90))
     # thresholded_rocks = color_thresh(birds_view, rgb_thresh=(100,100,100))
-    thresholded_terrain = color_thresh(birds_view)
-    thresholded_obstacles = color_thresh(birds_view)
+    thresholded_terrain = color_thresh_terrain(birds_view)
+    thresholded_obstacles = color_thresh_obstacles(birds_view)
     thresholded_rocks = rock_thresh(birds_view)
  # 4) Update Rover.vision_image (this will be displayed on left side of screen)
     Rover.vision_image[:,:,0] = thresholded_terrain * 255
