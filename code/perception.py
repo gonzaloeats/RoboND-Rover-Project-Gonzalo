@@ -101,7 +101,8 @@ def perception_step(Rover):
     # 1) Define source and destination points for perspective transform
     dst_size =5
     bottom_offset =6
-    source = np.float32([[47, 128], [283 ,133],[202, 96], [125, 96]])
+    #source = np.float32([[47, 128], [283 ,133],[202, 96], [125, 96]])
+    source = np.float32([[14, 140], [301 ,140],[200, 96], [118, 96]])
     destination = np.float32([[Rover.img.shape[1]/2 - dst_size, Rover.img.shape[0] - bottom_offset],
                   [Rover.img.shape[1]/2 + dst_size, Rover.img.shape[0] - bottom_offset],
                   [Rover.img.shape[1]/2 + dst_size, Rover.img.shape[0] - 2*dst_size - bottom_offset], 
@@ -136,7 +137,7 @@ def perception_step(Rover):
         #          Rover.worldmap[navigable_y_world, navigable_x_world, 2] += 1
     Rover.worldmap[obstacle_world[1], obstacle_world[0], :]       += [255,0,0]  
     Rover.worldmap[rock_world[1]    , rock_world[0]    , :]       += [0,255,0]  
-    Rover.worldmap[navigable_world[1] , navigable_world[0] , :]   += [0,0,255]  
+    Rover.worldmap[navigable_world[1] , navigable_world[0] , :]   += [0,0,1]  
     
     
     # 8) Convert rover-centric pixel positions to polar coordinates

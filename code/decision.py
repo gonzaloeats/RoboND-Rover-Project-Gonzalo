@@ -29,7 +29,7 @@ def find_path(Rover):
     elif (avg_angle < -0.2) & (Rover.steer > -10):
         Rover.steer += Rover.steer - 8
     else:
-        Rover.steer = 4
+        Rover.steer = 2
 
 def is_clear(Rover):
     clear = (np.sum(Rover.terrain[130:160,160:170]) > 130) & (np.sum(Rover.terrain[110:120,150:170]) > 100) & (np.sum(Rover.terrain[150:153,155:165]) > 20)
